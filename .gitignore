@@ -1,3 +1,6 @@
+#custom
+database/
+
 # Logs
 logs
 *.log
