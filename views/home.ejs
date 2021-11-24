@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>WorkTracker</title>
+        <meta name="description" content="Track your worktime">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/stylesheets/main.css">
+
+        <!-- slider -->
+        <link href="assets/nouislider.min.css" rel="stylesheet">
+        <script src="assets/nouislider.min.js"></script>
+
+        <!-- sidebar -->
+        <link rel="stylesheet" href="/stylesheets/sidebar.css">
+
+        <!-- FA -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    </head>
+    <body>
+
+        <div id="sidebar">
+
+            <div class="sidebarHeader">
+                <i onclick="toggleSidebar('close');" class="fas fa-times"></i>
+            </div>
+
+            <div onclick="updateProgram();">Update Webapp</div>
+            <h4 class="version">0.0.1</h4>
+
+        </div>
+
+        <header>
+            <div id="logoWrapper">
+                <div id="logo">
+                    <h1>WorkTracker</h1>
+                    <div></div>
+                </div>
+
+                <i onclick="toggleSidebar('open')" class="fas fa-bars"></i>
+                
+            </div>
+        </header>
+
+        <main id="sliderGroups">
+
+            
+
+            <div id="todaySlider" class="sliderGroup">
+
+                <div class="sliderGroupMeta">
+                    <h2>Today</h2>
+                    <span id="todayPerc">60%</span>
+                </div>
+
+                <div class="slider"></div>
+
+            </div>
+
+        </main>
+        
+        <script src="/scripts/main.js" async defer></script>
+    </body>
+</html>
