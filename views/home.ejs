@@ -21,7 +21,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     </head>
-    <body>
+
+    <body onload="getData();">
 
         <div id="sidebar">
 
@@ -48,8 +49,18 @@
 
         <main id="sliderGroups">
 
-            
+            <div id="weekSlider" class="sliderGroup">
 
+                <div class="sliderGroupMeta">
+                    <h2>Week Overview</h2>
+                    <span id="weekSliderPerc">30%</span>
+                </div>
+
+                <div class="slider"></div>
+
+            </div>
+
+            <!--
             <div id="todaySlider" class="sliderGroup">
 
                 <div class="sliderGroupMeta">
@@ -60,9 +71,16 @@
                 <div class="slider"></div>
 
             </div>
+            -->
 
         </main>
+
+        <div id="controls">
+            <i onclick="controlsLogic('pause')" class="fas fa-play"></i>
+        </div>
         
+        
+
         <script src="/scripts/main.js" async defer></script>
     </body>
 </html>

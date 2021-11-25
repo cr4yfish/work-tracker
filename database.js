@@ -9,13 +9,17 @@ function throwError(info) {
     console.log(`Database internal error at ${info}`);
 }
 
+// returns all entries, sorted by date like so: 31th, 30th, 29th etc.
 const getAll = function() {
     return new Promise((resolve, reject) => {
         try {
-            log.find( {}, function(err, docs) {
+            console.log("Trying to find docs...");
+            log.find( {} ).sort( {date: -1}).exec(function(err, docs) {
                 if(docs.length == 0) {
+                    console.log("No docs found!");
                     //reject("Database empty");
                 } else {
+                    console.log("Returning found docs..");
                     resolve(docs);
                 }
                 if(err) {
@@ -34,12 +38,14 @@ const getAll = function() {
 const saveDoc = function(doc) {
     return new Promise((resolve, reject) => {
         try {
+            console.log("Trying to save doc...");
             log.insert(doc, function (err, newDoc) {
                 if(err) {
                     console.log("Database error:", err);
                     throwError(err);
                     //reject(err);
                 } else {
+                    console.log("Returning saved doc..");
                     resolve(newDoc);
                 }
             })

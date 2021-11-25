@@ -22,7 +22,7 @@ const path = require("path")
         extended: false
     }))
 
-    .use(express.json());
+    app.use(express.json());
 
 //
 
@@ -47,12 +47,22 @@ app.get('/', function (req, res) {
 // APIs
 
     app.get("/api/getData", (req, res) => {
+        console.log("=== Get data request: ===");
         Database.getAll().then(function (data) {
-            console.log(data);
             res.send(data);
+            console.log("==== DONE ====")
         })
     })
 
+    app.post("/api/saveData", (req,res) => {
+        console.log("=== Save data request: ===");
+        Database.saveDoc(req.body)
+        .then(function (databaseRes) {
+            console.log("Saved in database:",databaseRes);
+            res.send(databaseRes);
+            console.log("==== DONE ====")
+        })
+    })
 //
 
 /*

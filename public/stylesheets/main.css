@@ -84,6 +84,24 @@ header i {
     border-radius: 3px;
 }
 
+#controls {
+    position: fixed;
+    bottom: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3rem;
+    cursor: pointer;
+}
+
+#controls .fas{
+    transition: all .25s;
+}
+
+#controls .fas:hover {
+    text-shadow: 0 0 10px var(--light-green);
+}
+
+
 main {
     display: flex;
     width: 100%;
@@ -98,7 +116,7 @@ main {
     width: 90%;
     flex-direction: column;
     align-items: center;
-    border: 1px solid var(--purple);
+    background: var(--lighterBlack);
     padding: 1rem;
     border-radius: 3px;
     color: var(--text-white);
@@ -125,19 +143,8 @@ main {
     box-shadow: none !important;
 }
 
-.noUi-target {
-    width: 100%;
-    border: 1px solid var(--light-green) !important;
-    background: none !important;
-    box-shadow: none !important;
-}
-
 .noUi-horizontal {
     height: 2rem !important;
-}
-
-.noUi-connect {
-    background: var(--light-green) !important;
 }
 
 .noUi-touch-area {
@@ -147,4 +154,12 @@ main {
 .noUi-handle:after, .noUi-handle:before {
     background: none !important;
 
+}
+
+#weekSlider .noUi-connect {
+    background: var(--btn-red);
+}
+
+#weekSlider .noUi-target {
+    border-color: var(--btn-red);
 }
