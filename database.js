@@ -57,7 +57,28 @@ const saveDoc = function(doc) {
     })
 }
 
+const updateEntry = function(entry) {
+    return new Promise((resolve, reject) => {
+        try {
+            console.log("Trying to update doc...");
+            log.update( {_id: entry._id}, entry, {}, function (err, docsUpdated) {
+                if(err) {
+                    throwError(err);
+                } else {
+                    console.log("Returning updated doc..");
+                    resolve(entry);
+                    log.persistence.compactDatafile();
+                }
+            })
+        }
+        catch (e) {
+            throwError(e);
+        }
+    })
+}
+
 exports.saveDoc = saveDoc;
 exports.getAll = getAll;
+exports.updateEntry = updateEntry;
 
 console.log("Loaded Database");

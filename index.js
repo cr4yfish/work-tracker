@@ -39,10 +39,13 @@ app.use(express.static(path.join(__dirname, "/public")));
 
 //
 
-app.get('/', function (req, res) {
-    res.render("home.ejs");
-})
+// Public entry points
 
+    app.get('/', function (req, res) {
+        res.render("home.ejs");
+    })
+
+//
 
 // APIs
 
@@ -63,25 +66,34 @@ app.get('/', function (req, res) {
             console.log("==== DONE ====")
         })
     })
+
+    app.post("/api/updateEntry", (req,res) => {
+        console.log("=== Update Entry request ===");
+        Database.updateEntry(req.body)
+        .then(function (data) {
+            console.log("Updated entry:", data);
+            res.send(data);
+            console.log("==== DONE ====")
+        })
+        
+    })
 //
 
-/*
-const exampleData = [
-    {
-        date: 245444323,
-        timeInHours: 3,
-    },
-    {
-        date: 664234,
-        timeInHours: 2,
+
+// make a new entry each day
+const cron = require("node-cron");
+let runEveryDayTask = cron.schedule("* 0 * * *", () => {
+    // code runs every day at 0am
+    console.log("=== STORING NEW TEMPLATE === ");
+    const templateBody = {
+        date: new Date().getTime(),
+        time: 0,
     }
-]
+    Database.saveDoc(templateBody)
+    .then(function (data) {
+        console.log("Saved in database:", data);
+        console.log("==== DONE ====");
+    })
+});
 
-exampleData.forEach(function (item) {
-    Database.saveDoc(item).then(function(returnVal) {
-        console.log(returnVal);
-    });
-})*/
-
-
-console.log("Loaded main module");
+console.log("Loaded main module. Listening on", _PORT);

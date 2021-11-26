@@ -27,7 +27,7 @@ body::-webkit-scrollbar-thumb {
     border-radius: 10px;
 }
 
-.fas {
+.far, .fas {
     color: var(--light-green);
 }
 
@@ -86,21 +86,37 @@ header i {
 
 #controls {
     position: fixed;
-    bottom: 5rem;
+    bottom: 0rem;
     left: 50%;
+    height: 4rem;
+    background-color: var(--purple);
+    padding: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
     transform: translateX(-50%);
-    font-size: 3rem;
+    font-size: 4rem;
+    z-index: 5;
+    align-items: center;
+}
+
+#controls i {
+    transition: all .25s;
+    color: var(--black);
     cursor: pointer;
 }
 
-#controls .fas{
-    transition: all .25s;
+#controls i:hover {
+    text-shadow: 0 0 10px var(--lighestBlack);
 }
 
-#controls .fas:hover {
-    text-shadow: 0 0 10px var(--light-green);
+#controls div {
+    font-size: 15pt;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
 }
-
 
 main {
     display: flex;
@@ -113,7 +129,6 @@ main {
 /* slider groups */
 .sliderGroup {
     display: flex;
-    width: 90%;
     flex-direction: column;
     align-items: center;
     background: var(--lighterBlack);
@@ -135,16 +150,57 @@ main {
     margin-top: 0;
 }
 
+/* date specific */
+.todaySliderGroup, #weekSlider {
+    width: 90%;
+}
+
+.previousWeekSliderGroup {
+    width: 85%;
+}
+
+.earlierSliderGroup {
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: 85%;
+    height: 2rem;
+    align-items: baseline;
+}
+.earlierSliderGroup .sliderGroupMeta {
+    width: 23%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.earlierSliderGroup .sliderGroupMeta h2 {
+    padding-right: 1rem;
+}
+
+.earlierSliderGroup .slider {
+    width: 77%;
+}
+
+.earlierSliderGroup .noUi-target {
+    border-color: var(--black) !important;
+}
+
+.earlierSliderGroup .noUi-connect {
+    background: var(--lighestBlack) !important;
+}
+
+.earlierSliderGroup .noUi-connects {
+    background: var(--black) !important;
+}
+
+.earlierSliderGroup .noUi-horizontal {
+    height: .5rem;
+}
 
 /* fix sliders */
 .noUi-handle {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-}
-
-.noUi-horizontal {
-    height: 2rem !important;
 }
 
 .noUi-touch-area {
@@ -162,4 +218,26 @@ main {
 
 #weekSlider .noUi-target {
     border-color: var(--btn-red);
+}
+
+
+@media screen and (max-width: 1000px) {
+    .earlierSliderGroup .sliderGroupMeta {
+        transform: translateY(-0.5em);
+    }
+    .earlierSliderGroup h2 {
+        margin: 0;
+    }
+    .earlierSliderGroup {
+        justify-content: space-between;
+    }
+    .earlierSliderGroup .slider {
+        width: 60%;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .earlierSliderGroup .slider {
+        width: 50%;
+    }
 }

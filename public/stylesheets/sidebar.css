@@ -62,3 +62,14 @@
     margin: 1rem;
     margin-top: 80vh;
 }
+
+
+.fa-bars, #sidebar .fa-times {
+    font-size: 20pt;
+    transition: all .25s;
+    text-shadow: 0 0 5px var(--soft-green);
+}
+
+fa-bars:hover, #sidebar .fa-times:hover {
+    text-shadow: 0 0 15px var(--soft-green);
+}

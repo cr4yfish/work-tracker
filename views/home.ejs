@@ -30,7 +30,7 @@
                 <i onclick="toggleSidebar('close');" class="fas fa-times"></i>
             </div>
 
-            <div onclick="updateProgram();">Update Webapp</div>
+            <div onclick="updateProgram();" class="sidebarEntry">Update Webapp</div>
             <h4 class="version">0.0.1</h4>
 
         </div>
@@ -60,23 +60,16 @@
 
             </div>
 
-            <!--
-            <div id="todaySlider" class="sliderGroup">
-
-                <div class="sliderGroupMeta">
-                    <h2>Today</h2>
-                    <span id="todayPerc">60%</span>
-                </div>
-
-                <div class="slider"></div>
-
-            </div>
-            -->
-
         </main>
 
         <div id="controls">
-            <i onclick="controlsLogic('pause')" class="fas fa-play"></i>
+            <div>
+                <span>Time in this session:</span>
+                <span id="time">0</span>
+                <span id="timeLabel"></span>
+            </div>
+            
+            <i onclick="controlsLogic('play')" class="far fa-play-circle"></i>
         </div>
         
         

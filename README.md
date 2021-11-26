@@ -1,5 +1,5 @@
 # work-tracker
- 
+
 #todo
 
 - Automatically make a new entry each day
