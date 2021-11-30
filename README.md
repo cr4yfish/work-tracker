@@ -76,8 +76,7 @@ It also comes with my (still in development) update client script.
   ```
 
 For the update client to work
-
-*pm2
+* pm2
  ```
  npm install pm2
  ```
