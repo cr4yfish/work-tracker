@@ -9,8 +9,6 @@
     Tracks your work time and stores it in a database. Perfect to use with a raspberry to selfhost a local server.
     <br />
     <br />
-    <a href="https://github.com/cr4yfish/work-tracker">View Demo</a>
-    ·
     <a href="https://github.com/cr4yfish/work-tracker/issues">Report Bug</a>
     ·
     <a href="https://github.com/cr4yfish/work-tracker/issues">Request Feature</a>
