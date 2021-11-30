@@ -130,7 +130,11 @@ then just replace the "database" folder from your backup with the new one in the
 
 ## Usage
 
-1. Open http://{your IP address or the one from the server}:30002
+1. Open   
+    ```sh
+    http://{your IP address or the one from the server}:30002
+    ```
+
 2. Press the "play" button at the bottom to start the counter
 3. Press the "pause" button to stop the counter
 
