@@ -56,6 +56,11 @@ It also comes with my (still in development) update client script.
 ### Built With
 
 * [Express.js](https://expressjs.com/)
+* [node.js](https://nodejs.org/en/)
+* [node-cron](https://www.npmjs.com/package/node-cron)
+* [nedb](https://www.npmjs.com/package/@seald-io/nedb)
+* [ejs](https://ejs.co/)
+
 
 
 ### Prerequisites

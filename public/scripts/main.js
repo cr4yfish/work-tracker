@@ -210,10 +210,10 @@ if(window.location.hash == "#play") {
             console.log("Sending", body);
             fetch(url, options).then(function(response) {
                 //console.log(response);
-                console.log(response);
+                //console.log(response);
     
                 // update slider
-                console.log("Updating slider vals with", body.time/60/60, "Hours");
+                //console.log("Updating slider vals with", body.time/60/60, "Hours");
                 document.getElementById("todaySliderId").noUiSlider.set([null,(body.time/60/60)]);
             })
             .then(async function() {
@@ -272,7 +272,7 @@ function makeSliders(set) {
     sliders.forEach(function(slider) {
 
         const timeVal = (parseInt(slider.previousElementSibling.querySelector("span").dataset.time)/60/60).toFixed(2);
-        console.log("Making slider", timeVal, typeof timeVal);
+        //console.log("Making slider", timeVal, typeof timeVal);
 
         let range = updateRange(timeVal);
 
@@ -378,7 +378,7 @@ function getData() {
     .then(function () {
         fetch(url).then(res => res.json())
         .then(async function(data) {
-            console.log("Return data:", data);
+            //console.log("Return data:", data);
     
             let todayFound = false;
             data.forEach(function (item) {
@@ -389,6 +389,7 @@ function getData() {
                     // set global var
                     previousTodayTime = item.time;
                     todayFound = true;
+                    
                 }
                 else {
                     makeSliderGroup(item.date, item.time, item._id);
@@ -397,7 +398,7 @@ function getData() {
 
             if(!todayFound && document.querySelector(".todaySliderGroup") == null) {
                 // no today slider for some reason -> make one
-                console.log("Made new entry for today");
+                //console.log("Made new entry for today");
                 await makeEntry(0, false);
                 getData();
             }
@@ -457,7 +458,7 @@ function updateSliderVals(slider, values) {
     
     // values -> time in hours
     values = parseFloat(values[1]);
-    console.log("Updateing", slider, "with", values, typeof values);
+    //console.log("Updating", slider, "with", values, typeof values);
 
     if(slider.previousSibling.nodeName != "#text") {
         // update numbers on the side
@@ -507,10 +508,12 @@ function clearOldData() {
 
 }
 
-function makeEntry(daysPriorToToday, ifFoo) {
+
+function makeEntry(daysPriorToToday = 0, ifFoo = false, workTime = 0) {
     return new Promise((resolve, reject) => {
         const url = `${_URL}/saveData`;
-        let time = 0;
+
+        let time = workTime*60*60;
         if(ifFoo) {
             time = Math.floor(Math.random()*100)+30
         }

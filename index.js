@@ -82,7 +82,7 @@ app.use(express.static(path.join(__dirname, "/public")));
 
 // make a new entry each day
 const cron = require("node-cron");
-let runEveryDayTask = cron.schedule("* 0 * * *", () => {
+cron.schedule("* 0 * * *", () => {
     // code runs every day at 0am
     console.log("=== STORING NEW TEMPLATE === ");
     const templateBody = {
@@ -95,7 +95,5 @@ let runEveryDayTask = cron.schedule("* 0 * * *", () => {
         console.log("==== DONE ====");
     })
 });
-
-runEveryDayTask();
 
 console.log("Loaded main module. Listening on", _PORT);
