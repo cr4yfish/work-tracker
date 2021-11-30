@@ -31,6 +31,8 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#settings">Settings</a></li>
+        <li><a href="#usage">Usage</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -92,12 +94,24 @@ For the update client to work
     ./initialInstall.sh
     ```
 Wait for the script to finish (The script just makes the 'update.sh' file an executable and adds the server to pm2).
+
 4. Run the server via pm2
     ```sh
     pm2 start work-tracker
+    
     ```
+    
+### Update process
+1. Open the webapp in a browser, open the sidebar via the menu icon in the top right and click "update webapp"
+2. This may take a couple seconds and will probably crash the webapp (no data loss)
+3. When done, you should see a higher version number at the bottom of the sidebar
 
-To change the hard-coded work time to your own:
+If this fails, I recommend making a backup of your "database" folder and performing the installation again
+then just replace the "database" folder from your backup with the new one in the cloned repo.
+
+
+## Settings
+### To change the hard-coded work time to your own
 1. Enter the root folder
     ```sh
     cd work-tracker
@@ -112,15 +126,9 @@ To change the hard-coded work time to your own:
     ```
 4. Save the file and exit nano. To see the changes, just refresh the browser. You do not need to restart the server.
 
-### Update process
-1. Open the webapp in a browser, open the sidebar via the menu icon in the top right and click "update webapp"
-2. This may take a couple seconds and will probably crash the webapp (no data loss)
-3. When done, you should see a higher version number at the bottom of the sidebar
 
-If this fails, I recommend making a backup of your "database" folder and performing the installation again
-then just replace the "database" folder from your backup with the new one in the cloned repo.
 
-### Usage
+## Usage
 
 1. Open http://{your IP address or the one from the server}:30002
 2. Press the "play" button at the bottom to start the counter
