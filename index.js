@@ -96,4 +96,6 @@ let runEveryDayTask = cron.schedule("* 0 * * *", () => {
     })
 });
 
+runEveryDayTask();
+
 console.log("Loaded main module. Listening on", _PORT);

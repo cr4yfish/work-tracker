@@ -3,6 +3,10 @@
     var _PLAY_MODE = false;
     const _URL = "http://localhost:30002/api";
     var updateTodayTimeHasToggled = false;
+    var previousTodayTime = 0;
+    const weeklyWorkTime = 20;
+    const updateCycleTimeInSeconds = 60;
+
 //
 
 
@@ -108,17 +112,28 @@ if(window.location.hash == "#play") {
         return pastTime;
     }
 
+    function getPreviousTime() {
+        if(!updateTodayTimeHasToggled) {
+            return previousTodayTime;
+        } else {
+            return 0;
+        }
+    }
+
+
     function incrementTime(x) {
         const time = document.getElementById("time");
         const timeLabel = document.getElementById("timeLabel");
+        const previousTime = getPreviousTime();
 
         let passedTime = getPastTime();
 
         if(_PLAY_MODE == true) {
             passedTime++
-            time.dataset.rawTime = passedTime;
+            time.dataset.rawTime = passedTime + previousTime;
+
             // cache time
-            localStorage.setItem("time", passedTime);
+            localStorage.setItem("passedTime", passedTime);
             updateTodayTime(false);
             updateTodayTimeHasToggled = true;
         }
@@ -173,9 +188,11 @@ if(window.location.hash == "#play") {
     }
 
 
-    function updateTodayTime(x) {
+    async function updateTodayTime(x) {
         if(!updateTodayTimeHasToggled || x == true) {
             const url = `${_URL}/updateEntry`;
+
+
 
             const body = {
                 date: cleanTimeString(getCurrentTimeString()),
@@ -196,12 +213,12 @@ if(window.location.hash == "#play") {
                 console.log(response);
     
                 // update slider
-                console.log("Updating slider vals with", body.time)
+                console.log("Updating slider vals with", body.time/60/60, "Hours");
                 document.getElementById("todaySliderId").noUiSlider.set([null,(body.time/60/60)]);
             })
             .then(async function() {
                 // call itself after 10sec for continuus backuping
-                await sleep(10000);
+                await sleep(updateCycleTimeInSeconds*1000);
                 updateTodayTime(true);
             })
         }
@@ -234,7 +251,7 @@ async function toggleSidebar(state) {
 }
 
 function updateRange(timeVal) {
-    let range = 20;
+    let range = weeklyWorkTime;
 
     if(timeVal < 15 && timeVal > 5) {
         range = 15; 
@@ -254,16 +271,24 @@ function makeSliders(set) {
 
     sliders.forEach(function(slider) {
 
-        const timeVal = slider.previousElementSibling.querySelector("span").dataset.time/60;
+        const timeVal = (parseInt(slider.previousElementSibling.querySelector("span").dataset.time)/60/60).toFixed(2);
+        console.log("Making slider", timeVal, typeof timeVal);
+
+        let range = updateRange(timeVal);
+
+        // lock range to weeklyWorkTime
+        if(slider.parentNode.getAttribute("id") == "weekSlider") {
+            range = weeklyWorkTime;
+        }
 
         noUiSlider.create(slider, {
-            start: [0, timeVal/60/60],
+            start: [0, timeVal],
             connect: true,
             behaviour: "drag",
             range: {
                 'min': 0,
-                'max': updateRange(timeVal)
-            }
+                'max': range,
+            },
         });
 
         // update WeekSlider on change of others
@@ -280,7 +305,7 @@ function makeSliders(set) {
         });
 
         // initial set
-        updateSliderVals(slider, [0,timeVal/60/60])
+        updateSliderVals(slider, [0,timeVal])
     })
 }
 
@@ -352,22 +377,30 @@ function getData() {
     clearOldData()
     .then(function () {
         fetch(url).then(res => res.json())
-        .then(function(data) {
+        .then(async function(data) {
             console.log("Return data:", data);
     
+            let todayFound = false;
             data.forEach(function (item) {
                 
                 // if date is today, set as today
                 if(convertTimeStringToDate(item.date) == convertTimeStringToDate(getCurrentTimeString())) {
                     makeSliderGroup("Today", item.time, item._id);
+                    // set global var
+                    previousTodayTime = item.time;
+                    todayFound = true;
                 }
                 else {
                     makeSliderGroup(item.date, item.time, item._id);
                 }
-                
-                // then get next 6, a little smaller 'cause last week
-                // then get all the rest and make it small 'cause just logs
             })
+
+            if(!todayFound && document.querySelector(".todaySliderGroup") == null) {
+                // no today slider for some reason -> make one
+                console.log("Made new entry for today");
+                await makeEntry(0, false);
+                getData();
+            }
         })
     
         .then(function (foo) {
@@ -383,9 +416,10 @@ function getData() {
 
 
 function updateWeekSlider() {
-    let allSliders = Array.from(document.querySelectorAll(".slider"));
-    // remove weekSlider
-    const prevWeekVal = allSliders.shift();
+    let allSliders = Array.from(document.querySelectorAll(".previousWeekSliderGroup .slider"));
+    allSliders.unshift(document.querySelector(".todaySliderGroup .slider"));
+
+
 
     let sliderValsArray = [];
     allSliders.forEach(function(slider) {
@@ -399,10 +433,10 @@ function updateWeekSlider() {
     var noUIConnect = document.querySelector("#weekSlider .noUi-connect").style.background;
     var noUiTarget = document.querySelector("#weekSlider .noUi-target").style.borderColor;
     
-    if(val == 20) {
+    if(val == weeklyWorkTime) {
         noUIConnect = "var(--light-green)";
         noUiTarget = "var(--light-green)";
-    } else if(val > 20) {
+    } else if(val > weeklyWorkTime) {
         noUIConnect = "var(--purple)";
         noUiTarget = "var(--purple)";
     } else {
@@ -420,19 +454,31 @@ function updateWeekSlider() {
 }
 
 function updateSliderVals(slider, values) {
+    
+    // values -> time in hours
     values = parseFloat(values[1]);
+    console.log("Updateing", slider, "with", values, typeof values);
+
     if(slider.previousSibling.nodeName != "#text") {
         // update numbers on the side
         let numberEle = slider.previousSibling.querySelector("span");
         const numberVal = values.toFixed(1);
+
         let variant = "Hours";
-        if(numberVal == 1.0) {
+        let multip = 1;
+
+        if (numberVal == 1.0) {
             variant = "Hour";
+        } else if (numberVal < 1.0) {
+            variant = "Minutes";
+            // multiply numberVal *60, so you get minutes
+            multip = 60;
         }
-        if(numberVal <= 0.1) {
+
+        if(numberVal <= 0.001) {
             numberEle.textContent = "Not worked on this day.";
         } else {
-            numberEle.textContent = `${numberVal} ${variant}`;
+            numberEle.textContent = `${numberVal * multip} ${variant}`;
         }
     }
 }
@@ -461,26 +507,33 @@ function clearOldData() {
 
 }
 
-function fillInFooData(number) {
-    const url = `${_URL}/saveData`;
-
-    const body = {
-        date: getPreviousDay(getCurrentTimeString(), number),
-        time: Math.floor(Math.random()*100)+30,
-    }
-
-    const options = {
-        method: "post",
-        body: JSON.stringify(body),
-        headers: {
-            "Content-Type": "application/json"
+function makeEntry(daysPriorToToday, ifFoo) {
+    return new Promise((resolve, reject) => {
+        const url = `${_URL}/saveData`;
+        let time = 0;
+        if(ifFoo) {
+            time = Math.floor(Math.random()*100)+30
         }
-    }
-
-    fetch(url, options).then(function(response) {
-        //console.log(response);
-        return response;
+    
+        const body = {
+            date: getPreviousDay(getCurrentTimeString(), daysPriorToToday),
+            time: time,
+        }
+    
+        const options = {
+            method: "post",
+            body: JSON.stringify(body),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+    
+        fetch(url, options).then(function(response) {
+            //console.log(response);
+            resolve(response);
+        })
     })
+
 
 }
 
