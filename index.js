@@ -7,6 +7,7 @@ const app = express();
 const Database = require("./database");
 const path = require("path")
 
+
 // CORS setup
 
     const cors = require("cors");
@@ -75,25 +76,9 @@ app.use(express.static(path.join(__dirname, "/public")));
             res.send(data);
             console.log("==== DONE ====")
         })
-        
     })
+
+
 //
-
-
-// make a new entry each day
-const cron = require("node-cron");
-cron.schedule("* 0 * * *", () => {
-    // code runs every day at 0am
-    console.log("=== STORING NEW TEMPLATE === ");
-    const templateBody = {
-        date: new Date().getTime(),
-        time: 0,
-    }
-    Database.saveDoc(templateBody)
-    .then(function (data) {
-        console.log("Saved in database:", data);
-        console.log("==== DONE ====");
-    })
-});
 
 console.log("Loaded main module. Listening on", _PORT);

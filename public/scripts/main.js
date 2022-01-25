@@ -4,17 +4,15 @@
     const _URL = "http://localhost:30002/api";
     var updateTodayTimeHasToggled = false;
     var previousTodayTime = 0;
-    const weeklyWorkTime = 20;
+    const monthlyWorkTime = 30;
     const updateCycleTimeInSeconds = 60;
 
 //
-
 
 if(window.location.hash == "#play") {
     _PLAY_MODE = true;
     controlsLogic("play");
 }
-
 
 /// TIME STUFF
 
@@ -99,7 +97,6 @@ if(window.location.hash == "#play") {
     let interval = Timer( x => incrementTime(x.timestamp) , 1000);
     interval.pause();
 
-
     function getPastTime() {
         var pastTime = document.getElementById("time").dataset.rawTime;
 
@@ -119,7 +116,6 @@ if(window.location.hash == "#play") {
             return 0;
         }
     }
-
 
     function incrementTime(x) {
         const time = document.getElementById("time");
@@ -163,8 +159,6 @@ if(window.location.hash == "#play") {
         }
     }
 
-
-
     function controlsLogic(state) {
         const control = document.querySelector("#controls .far");
 
@@ -187,12 +181,9 @@ if(window.location.hash == "#play") {
         }
     }
 
-
     async function updateTodayTime(x) {
         if(!updateTodayTimeHasToggled || x == true) {
             const url = `${_URL}/updateEntry`;
-
-
 
             const body = {
                 date: cleanTimeString(getCurrentTimeString()),
@@ -223,12 +214,7 @@ if(window.location.hash == "#play") {
             })
         }
     }
-        
-
-
-
 //
-
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -251,7 +237,7 @@ async function toggleSidebar(state) {
 }
 
 function updateRange(timeVal) {
-    let range = weeklyWorkTime;
+    let range = monthlyWorkTime;
 
     if(timeVal < 15 && timeVal > 5) {
         range = 15; 
@@ -260,10 +246,8 @@ function updateRange(timeVal) {
     } else if(timeVal < 4) {
         range = 4;
     }
-
     return range;
 }
-
 
 // light sliders
 function makeSliders(set) {
@@ -276,9 +260,9 @@ function makeSliders(set) {
 
         let range = updateRange(timeVal);
 
-        // lock range to weeklyWorkTime
+        // lock range to monthlyWorkTime
         if(slider.parentNode.getAttribute("id") == "weekSlider") {
-            range = weeklyWorkTime;
+            range = monthlyWorkTime;
         }
 
         noUiSlider.create(slider, {
@@ -309,8 +293,6 @@ function makeSliders(set) {
     })
 }
 
-
-
 function makeSliderGroup(date, perc, id) {
 
     const parent = document.getElementById("sliderGroups");
@@ -331,19 +313,30 @@ function makeSliderGroup(date, perc, id) {
     const h2 = document.createElement("h2");
     sliderGroupMeta.appendChild(h2);
 
+    // add month class
+    let targetMonth = new Date(date).getMonth(),
+    currentMonth = new Date(cleanTimeString(getCurrentTimeString())).getMonth();
+    if(targetMonth == currentMonth) {
+        console.log(targetMonth, "==", currentMonth);
+        sliderGroup.classList.add("currentMonth");
+    }
+
     if(date != "Today") {
-        const diff = getDateDifferenceFromTodayInDays(date);
         
         // find out if day is before last monday 
         // if so, then make it previousWeekSliderGroup
-        const currentWeekDay = new Date().getDay()-1;
 
-        //console.log(`=== Current ===\nCurrentWeekDay: ${currentWeekDay}\nDiff: ${diff}\nDate: ${date}\n=======`);
+        // monday = 1, sunday = 0
+        const currentWeekDay = new Date().getDay();
 
-        if(currentWeekDay != 0 && diff <= currentWeekDay) {
-            // if currentWeekDay != 0 -> today isnt monday, there can be previous days in the week
-            // if diff <= currentWeekDay -> difference in days is smaller than span to last monday,
-            // which means that diff cannot be earlier if true
+        // gets last monday's time string
+        var prevMonday = new Date();
+        prevMonday.setDate(prevMonday.getDate() - (prevMonday.getDay() + 6) % 7);
+        prevMonday = Date.parse(prevMonday);
+        prevMonday = cleanTimeString(prevMonday);
+
+        //   not today   and   time number bigger than last monday
+        if(currentWeekDay != 1 && date >= prevMonday) {
             sliderGroup.classList.add("previousWeekSliderGroup");
 
             // set title after weekDay
@@ -366,10 +359,7 @@ function makeSliderGroup(date, perc, id) {
     percSpan.textContent = perc;
     percSpan.dataset.time = perc;
     sliderGroupMeta.appendChild(percSpan);
-    
- 
 }
-
 
 function getData() {
     const url = `${_URL}/getData`;
@@ -415,12 +405,9 @@ function getData() {
     })
 }
 
-
 function updateWeekSlider() {
-    let allSliders = Array.from(document.querySelectorAll(".previousWeekSliderGroup .slider"));
+    let allSliders = Array.from(document.querySelectorAll(".currentMonth .slider"));
     allSliders.unshift(document.querySelector(".todaySliderGroup .slider"));
-
-
 
     let sliderValsArray = [];
     allSliders.forEach(function(slider) {
@@ -434,10 +421,10 @@ function updateWeekSlider() {
     var noUIConnect = document.querySelector("#weekSlider .noUi-connect").style.background;
     var noUiTarget = document.querySelector("#weekSlider .noUi-target").style.borderColor;
     
-    if(val == weeklyWorkTime) {
+    if(val == monthlyWorkTime) {
         noUIConnect = "var(--light-green)";
         noUiTarget = "var(--light-green)";
-    } else if(val > weeklyWorkTime) {
+    } else if(val > monthlyWorkTime) {
         noUIConnect = "var(--purple)";
         noUiTarget = "var(--purple)";
     } else {
@@ -451,7 +438,6 @@ function updateWeekSlider() {
     } else {
         document.querySelector("#weekSlider #weekSliderPerc").textContent = `${val.toFixed(1)} Hours`;
     }
-    
 }
 
 function updateSliderVals(slider, values) {
@@ -490,7 +476,7 @@ function clearOldData() {
         if(sliders.length > 1) {
             try {
                 for(i = sliders.length; i >= 0; i--) {
-                    if(sliders[i].getAttribute("id") != "weekSlider") {
+                    if(sliders[i].getAttribute("id") != "weekSlider" && sliders[i].getAttribute("id") != "weekSlider") {
                         sliders[i].remove();
                     }
                 }
@@ -503,11 +489,8 @@ function clearOldData() {
             // no sliders present
             resolve();
         }
-
     })
-
 }
-
 
 function makeEntry(daysPriorToToday = 0, ifFoo = false, workTime = 0) {
     return new Promise((resolve, reject) => {
@@ -536,23 +519,20 @@ function makeEntry(daysPriorToToday = 0, ifFoo = false, workTime = 0) {
             resolve(response);
         })
     })
-
-
 }
-
 
 ///////////// Date stuff
 function getWeekDay0Index(number) {
-    weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     return weekDays[number];
 }
 
 function getCurrentWeekDay() {
-    return getWeekDay0Index(new Date().getDay()-1);
+    return getWeekDay0Index(new Date().getDay());
 }
 
 function getWeekDay(str) {
-    return getWeekDay0Index(new Date(str).getDay()-1);
+    return getWeekDay0Index(new Date(str).getDay());
 }
 
 function getCurrentTimeString() {
@@ -597,6 +577,10 @@ function cleanTimeString(str) {
 
 function getOneDayInMs() {
     return 86400000;
+}
+
+function getOneWeekInMs() {
+    return 604800000;
 }
 
 function secondsToHms(secs)
