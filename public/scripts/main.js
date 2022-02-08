@@ -434,7 +434,7 @@ function updateWeekSlider() {
     
     document.querySelector("#weekSlider .slider").noUiSlider.set([0, val]);
     if(val < 1) {
-        document.querySelector("#weekSlider #weekSliderPerc").textContent = "Not worked this week.";
+        document.querySelector("#weekSlider #weekSliderPerc").textContent = "Not worked this month.";
     } else {
         document.querySelector("#weekSlider #weekSliderPerc").textContent = `${val.toFixed(1)} Hours`;
     }
